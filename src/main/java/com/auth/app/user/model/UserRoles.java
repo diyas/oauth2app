@@ -7,19 +7,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * @Author Rizki Mufrizal <mufrizalrizki@gmail.com>
- * @Web <https://RizkiMufrizal.github.io>
- * @Since Feb 1, 2017
- * @Time 10:31:23 PM
- * @Encoding UTF-8
- * @Project Spring-OAuth2-Custom
- * @Package com.rizki.mufrizal.spring.oauth2.custom.domain
- */
 @Data
 @Entity
-//@Table(name = "tb_user_role")
-public class UserRole implements Serializable {
+@Table(name = "user_roles")
+public class UserRoles implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -34,5 +25,5 @@ public class UserRole implements Serializable {
     @JsonIgnore
     @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false, foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
-    private User user;
+    private Users user;
 }

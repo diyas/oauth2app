@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -66,21 +65,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/about").permitAll()
-                .antMatchers("/users/**").permitAll()
+                .antMatchers("/api/v1/payment/**").permitAll()
                 .antMatchers("/oauth/token").permitAll()
 //                .antMatchers("/api/**").permitAll()
                 //.antMatchers("/api/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic()
-                .realmName("APP_REALM");
+                .httpBasic();
     }
 
-    @Bean
-    public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
-    }
+//    @Bean
+//    public TokenStore tokenStore() {
+//        return new InMemoryTokenStore();
+//    }
 
     @Bean
     @Autowired
