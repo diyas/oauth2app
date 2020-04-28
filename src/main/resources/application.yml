@@ -38,6 +38,7 @@ spring:
       resource:
         filter-order: 3
 oauth2:
+  url: http://localhost:8080/oauth/token
   clientId: tester
   clientSecret: tester
   tokenExpired: 480
