@@ -24,14 +24,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.annotation.Resource;
-
 @Configuration
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource(name = "userService")
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -48,15 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(new MessageDigestPasswordEncoder("MD5"));
     }
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf()
-//                .disable()
-//                .anonymous().disable()
-//                .authorizeRequests()
-//                .antMatchers("/api-docs/**").permitAll();
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -87,11 +76,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .httpBasic();
     }
-
-//    @Bean
-//    public TokenStore tokenStore() {
-//        return new InMemoryTokenStore();
-//    }
 
     @Bean
     @Autowired

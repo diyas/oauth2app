@@ -60,13 +60,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient(oauth2Properties.getClientId())
                 .secret(encoder.encode(oauth2Properties.getClientSecret()))
                 .authorizedGrantTypes(
-                        SettingEnum.GRANT_TYPE.value,
+                        SettingEnum.PASSWORD.value,
                         SettingEnum.AUTHORIZATION_CODE.value,
                         SettingEnum.REFRESH_TOKEN.value,
                         SettingEnum.IMPLICIT.value)
                 .scopes(SettingEnum.SCOPE_READ.value,
                         SettingEnum.SCOPE_WRITE.value,
-                        SettingEnum.TRUST.value)
+                        SettingEnum.SCOPE_TRUST.value)
                 .accessTokenValiditySeconds(oauth2Properties.getTokenExpired())
                 .refreshTokenValiditySeconds(oauth2Properties.getRefreshToken());
         //new OauthConfigData(OauthConfigEnum.CLIENT_ID).getValue();

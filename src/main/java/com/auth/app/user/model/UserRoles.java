@@ -23,7 +23,7 @@ public class UserRoles implements Serializable {
     private Role role;
 
     @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false, foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT))
     private Users user;
 }

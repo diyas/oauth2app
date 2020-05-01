@@ -35,7 +35,7 @@ public class AuthCtl {
         String accessTokenUrl = oauth2Properties.getUrl();
         accessTokenUrl += "?username=" + request.getLogin().getUsername();
         accessTokenUrl += "&password=" + request.getLogin().getPassword();
-        accessTokenUrl += "&grant_type=" + SettingEnum.GRANT_TYPE.value;
+        accessTokenUrl += "&grant_type=" + SettingEnum.PASSWORD.value;
         ResponseEntity<String> response = restTemplate.exchange(accessTokenUrl, HttpMethod.POST, req, String.class);
         return response;
     }
