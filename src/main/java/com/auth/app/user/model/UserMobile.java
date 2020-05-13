@@ -37,8 +37,8 @@ public class UserMobile {
     private String lastUserDataUpdateTimestamp;
     @Column(name = "lock_flag")
     private int lockFlag;
-    @Column(name = "header_ksn")
-    private String headerKsn;
-    @Column(name = "enc_header_ipek")
-    private String encHeaderIpek;
+//    @Column(name = "header_ksn")
+//    private String headerKsn;
+//    @Column(name = "enc_header_ipek")
+//    private String encHeaderIpek;
 }

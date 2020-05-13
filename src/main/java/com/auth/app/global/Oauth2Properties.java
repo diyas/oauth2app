@@ -2,11 +2,13 @@ package com.auth.app.global;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
+@Configuration
+@ConfigurationProperties(prefix = "oauth2")
 @Data
-@Component
-@ConfigurationProperties("oauth2")
+@Order(0)
 public class Oauth2Properties {
     private String url;
     private String clientId;

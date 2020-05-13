@@ -14,4 +14,6 @@ public class Roles {
     private long id;
     @Column
     private String name;
+//    @Column
+//    private String path;
 }

@@ -2,12 +2,15 @@ package com.auth.app.config;
 
 import com.auth.app.global.Oauth2Properties;
 import com.auth.app.global.SettingEnum;
+import com.auth.app.handler.CustomOauthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -78,6 +81,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userApprovalHandler(userApprovalHandler)
                 .accessTokenConverter(jwtAccessTokenConverter())
                 .authenticationManager(authenticationManager);
+        endpoints.exceptionTranslator(exception -> {
+            if (exception instanceof OAuth2Exception) {
+                OAuth2Exception oAuth2Exception = (OAuth2Exception) exception;
+                return ResponseEntity
+                        .status(oAuth2Exception.getHttpErrorCode())
+                        .body(new CustomOauthException(oAuth2Exception.getMessage()));
+            } else {
+                throw exception;
+            }
+        });
     }
 
     @Bean

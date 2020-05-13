@@ -1,10 +1,11 @@
 package com.auth.app.config;
 
+import com.auth.app.global.RedisProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
@@ -16,31 +17,43 @@ import java.time.Duration;
 
 
 @Configuration
-@PropertySource("classpath:application.yml")
+//@PropertySource("classpath:application.yml")
 @EnableRedisHttpSession
 public class RedisSessionConfig {
 
     @Autowired
-    private Environment environment;
+    private RedisProperties redisProperties;
 
     private JedisPoolConfig jedisPoolConfig() {
-        final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(Integer.parseInt(environment.getRequiredProperty("spring.redis.max-total")));
-        jedisPoolConfig.setMaxIdle(Integer.parseInt(environment.getRequiredProperty("spring.redis.max-idle")));
-        jedisPoolConfig.setMinIdle(Integer.parseInt(environment.getRequiredProperty("spring.redis.min-idle")));
-        jedisPoolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(Integer.parseInt(environment.getRequiredProperty("spring.redis.min-evictable-idle-time-millis"))).toMillis());
-        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(Integer.parseInt(environment.getRequiredProperty("spring.redis.time-between-eviction-runs-millis"))).toMillis());
-        jedisPoolConfig.setBlockWhenExhausted(Boolean.valueOf(environment.getRequiredProperty("spring.redis.block-when-exhausted")));
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(redisProperties.getMaxTotal());
+        jedisPoolConfig.setMaxIdle(redisProperties.getMaxIdle());
+        jedisPoolConfig.setMinIdle(redisProperties.getMinIdle());
+        jedisPoolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(redisProperties.getMinEvictableIdleTimeMillis()).toMillis());
+        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(redisProperties.getTimeBetweenEvictionRunsMillis()).toMillis());
+        jedisPoolConfig.setBlockWhenExhausted(redisProperties.isBlockWhenExhausted());
         return jedisPoolConfig;
     }
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig());
-        jedisConnectionFactory.setPort(Integer.parseInt(environment.getRequiredProperty("spring.redis.port")));
-        jedisConnectionFactory.setHostName(environment.getRequiredProperty("spring.redis.host"));
-        jedisConnectionFactory.setUsePool(Boolean.valueOf(environment.getRequiredProperty("spring.redis.use-pool")));
-        return jedisConnectionFactory;
+//        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig());
+//        jedisConnectionFactory.setPort(redisProperties.getPort());
+//        jedisConnectionFactory.setHostName(redisProperties.getHost());
+//        jedisConnectionFactory.setUsePool(redisProperties.isUsePool());
+//        return jedisConnectionFactory;
+
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(redisProperties.getHost());
+        //redisStandaloneConfiguration.setDatabase(0);
+        //redisStandaloneConfiguration.setPassword(RedisPassword.of("123456"));
+        redisStandaloneConfiguration.setPort(redisProperties.getPort());
+        JedisClientConfiguration.JedisPoolingClientConfigurationBuilder jpccb =
+                (JedisClientConfiguration.JedisPoolingClientConfigurationBuilder) JedisClientConfiguration.builder();
+        jpccb.poolConfig(jedisPoolConfig());
+        JedisClientConfiguration jedisClientConfiguration = jpccb.build();
+        return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
+
     }
 
     @Bean
