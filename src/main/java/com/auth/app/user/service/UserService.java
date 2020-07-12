@@ -1,4 +1,4 @@
-package com.auth.app.service;
+package com.auth.app.user.service;
 
 import com.auth.app.repository.UserRepo;
 import com.auth.app.user.model.UserRoles;
@@ -35,7 +35,6 @@ public class UserService implements UserDetailsService {
         List<SimpleGrantedAuthority> list = new ArrayList<>();
         for (UserRoles t : user.getUserRoles())
             list.add(new SimpleGrantedAuthority(t.getRole().toString()));
-//        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
         return list;
     }
 }

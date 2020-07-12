@@ -1,4 +1,4 @@
-package com.auth.app.service;
+package com.auth.app.user.service;
 
 import com.auth.app.repository.UserMobileRepo;
 import com.auth.app.user.model.UserMobile;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@Profile("dev")
+@Profile({"dev","local","staging","production"})
 public class UserServiceDev implements UserDetailsService {
 
     @Autowired

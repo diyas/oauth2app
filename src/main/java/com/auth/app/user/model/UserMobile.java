@@ -1,6 +1,7 @@
 package com.auth.app.user.model;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 
@@ -36,7 +37,7 @@ public class UserMobile {
     @Column(name = "last_user_data_update_timestamp")
     private String lastUserDataUpdateTimestamp;
     @Column(name = "lock_flag")
-    private int lockFlag;
+    private String lockFlag;
 //    @Column(name = "header_ksn")
 //    private String headerKsn;
 //    @Column(name = "enc_header_ipek")
