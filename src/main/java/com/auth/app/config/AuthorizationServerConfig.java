@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
@@ -28,17 +30,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private Oauth2Properties oauth2Properties;
 
-//    @Autowired
-//    OauthConfigRepo oauthConfig;
-
     @Autowired
     private JedisConnectionFactory jedisConnectionFactory;
 
     @Autowired
     private BCryptPasswordEncoder encoder;
-
-//    @Autowired
-//    private TokenStore tokenStore;
 
     @Autowired
     private UserApprovalHandler userApprovalHandler;
@@ -46,6 +42,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
+//	@Autowired
+//    private UserDetailsService userDetailsService;
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         return new JwtAccessTokenConverter();
@@ -69,32 +67,31 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                         SettingEnum.IMPLICIT.value)
                 .scopes(SettingEnum.SCOPE_READ.value,
                         SettingEnum.SCOPE_WRITE.value,
-                        SettingEnum.SCOPE_TRUST.value)
-                .accessTokenValiditySeconds(oauth2Properties.getTokenExpired())
-                .refreshTokenValiditySeconds(oauth2Properties.getRefreshToken());
-        //new OauthConfigData(OauthConfigEnum.CLIENT_ID).getValue();
+                        SettingEnum.SCOPE_TRUST.value);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())
                 .userApprovalHandler(userApprovalHandler)
-                .accessTokenConverter(jwtAccessTokenConverter())
+                .tokenServices(tokenServices())
                 .authenticationManager(authenticationManager);
-        endpoints.exceptionTranslator(exception -> {
-            if (exception instanceof OAuth2Exception) {
-                OAuth2Exception oAuth2Exception = (OAuth2Exception) exception;
-                return ResponseEntity
-                        .status(oAuth2Exception.getHttpErrorCode())
-                        .body(new CustomOauthException(oAuth2Exception.getMessage()));
-            } else {
-                throw exception;
-            }
-        });
     }
 
     @Bean
     public TokenStore tokenStore() {
         return new RedisTokenStore(jedisConnectionFactory);
+    }
+
+    @Bean
+    public DefaultTokenServices tokenServices() {
+        DefaultTokenServices services = new DefaultTokenServices();
+        services.setTokenStore(tokenStore());
+        services.setSupportRefreshToken(true);
+        services.setReuseRefreshToken(false);
+        services.setTokenEnhancer(jwtAccessTokenConverter());
+        services.setAccessTokenValiditySeconds(oauth2Properties.getTokenExpired());
+        services.setRefreshTokenValiditySeconds(oauth2Properties.getRefreshTokenExpired());
+        return services;
     }
 }

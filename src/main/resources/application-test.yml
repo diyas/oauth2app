@@ -42,3 +42,7 @@ oauth2:
   clientSecret: tester
   tokenExpired: 480
   refreshToken: 480
+server:
+  port: 8080
+  servlet:
+    context-path: /oauth2

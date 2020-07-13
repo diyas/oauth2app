@@ -14,7 +14,7 @@ public class Oauth2Properties {
     private String clientId;
     private String clientSecret;
     private int tokenExpired;
-    private int refreshToken;
+    private int refreshTokenExpired;
 
     public String getCredentials() {
         return this.getClientId() + ":" + this.getClientSecret();

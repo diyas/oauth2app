@@ -17,7 +17,6 @@ import java.time.Duration;
 
 
 @Configuration
-//@PropertySource("classpath:application.yml")
 @EnableRedisHttpSession
 public class RedisSessionConfig {
 

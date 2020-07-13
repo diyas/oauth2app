@@ -18,9 +18,10 @@ public class CustomOauthExceptionSerializer extends StdSerializer<CustomOauthExc
     public void serialize(CustomOauthException value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeNumberField("code", value.getHttpErrorCode());
-        jsonGenerator.writeBooleanField("status", false);
+        jsonGenerator.writeObjectField("status", value.getOAuth2ErrorCode());
+        jsonGenerator.writeObjectField("message", value.getMessage());
         jsonGenerator.writeObjectField("data", null);
-        jsonGenerator.writeObjectField("errors", Arrays.asList(value.getOAuth2ErrorCode(), value.getMessage()));
+//        jsonGenerator.writeObjectField("errors", Arrays.asList(value.getOAuth2ErrorCode(), value.getMessage()));
         if (value.getAdditionalInformation() != null) {
             for (Map.Entry<String, String> entry : value.getAdditionalInformation().entrySet()) {
                 String key = entry.getKey();
