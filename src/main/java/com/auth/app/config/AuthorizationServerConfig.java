@@ -3,6 +3,7 @@ package com.auth.app.config;
 import com.auth.app.global.Oauth2Properties;
 import com.auth.app.global.SettingEnum;
 import com.auth.app.handler.CustomOauthException;
+import com.auth.app.user.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +43,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private AuthenticationManager authenticationManager;
 
-//	@Autowired
-//    private UserDetailsService userDetailsService;
+    @Autowired
+    private ClientService clientDetailService;
+
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         return new JwtAccessTokenConverter();
@@ -54,20 +56,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         oauthServer.allowFormAuthenticationForClients().checkTokenAccess("isAuthenticated()");
     }
 
-    @Override
-    public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
+//    @Override
+//    public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
+//
+//        configurer.inMemory()
+//                .withClient(oauth2Properties.getClientId())
+//                .secret(encoder.encode(oauth2Properties.getClientSecret()))
+//                .authorizedGrantTypes(
+//                        SettingEnum.PASSWORD.value,
+//                        SettingEnum.AUTHORIZATION_CODE.value,
+//                        SettingEnum.REFRESH_TOKEN.value,
+//                        SettingEnum.IMPLICIT.value)
+//                .scopes(SettingEnum.SCOPE_READ.value,
+//                        SettingEnum.SCOPE_WRITE.value,
+//                        SettingEnum.SCOPE_TRUST.value);
+//    }
 
-        configurer.inMemory()
-                .withClient(oauth2Properties.getClientId())
-                .secret(encoder.encode(oauth2Properties.getClientSecret()))
-                .authorizedGrantTypes(
-                        SettingEnum.PASSWORD.value,
-                        SettingEnum.AUTHORIZATION_CODE.value,
-                        SettingEnum.REFRESH_TOKEN.value,
-                        SettingEnum.IMPLICIT.value)
-                .scopes(SettingEnum.SCOPE_READ.value,
-                        SettingEnum.SCOPE_WRITE.value,
-                        SettingEnum.SCOPE_TRUST.value);
+
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.withClientDetails(clientDetailService);
     }
 
     @Override
@@ -90,8 +98,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         services.setSupportRefreshToken(true);
         services.setReuseRefreshToken(false);
         services.setTokenEnhancer(jwtAccessTokenConverter());
-        services.setAccessTokenValiditySeconds(oauth2Properties.getTokenExpired());
-        services.setRefreshTokenValiditySeconds(oauth2Properties.getRefreshTokenExpired());
+        services.setClientDetailsService(clientDetailService);
         return services;
     }
 }

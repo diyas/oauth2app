@@ -25,7 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,13 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
-//    @Autowired
-//    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(new MessageDigestPasswordEncoder("MD5"));
-//        auth.authenticationProvider(userServiceProvider);
-//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

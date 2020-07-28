@@ -36,12 +36,6 @@ public class RedisSessionConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
-//        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig());
-//        jedisConnectionFactory.setPort(redisProperties.getPort());
-//        jedisConnectionFactory.setHostName(redisProperties.getHost());
-//        jedisConnectionFactory.setUsePool(redisProperties.isUsePool());
-//        return jedisConnectionFactory;
-
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         //redisStandaloneConfiguration.setDatabase(0);

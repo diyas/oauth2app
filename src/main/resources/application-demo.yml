@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://10.50.11.79:3306/midware_master_db?autoReconnect=true
+    url: jdbc:mariadb://localhost:2600/midware_master_db?autoReconnect=true
     username: root
     password: P@ssw0rd.15!
     poolName: SpringBootHikariCP
@@ -12,7 +12,7 @@ spring:
     idleTimeout: 30000
   redis:
     host: localhost
-    port: 6379
+    port: 32775
     max-total: 128
     max-idle: 128
     min-idle: 16
@@ -22,7 +22,7 @@ spring:
     use-pool: true
   jpa:
     hibernate.ddl-auto: none
-    show-sql: false
+    show-sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
   security:
     oauth2:
@@ -31,11 +31,9 @@ spring:
 oauth2:
   clientId: tester
   clientSecret: tester
-  tokenExpired: 1314000
-  refreshTokenExpired: 1314120
+  tokenExpired: 480
+  refreshToken: 480
 server:
   port: 8080
   servlet:
     context-path: /oauth2
-logging:
-  config: classpath:logback-server.xml
